@@ -42,3 +42,18 @@ struct sockaddr_in get_server_address(char *hostname, int portnumber)
 
   return server_address;
 }
+
+
+// Connect to server 
+
+
+
+// Establish handshake
+
+
+
+// Communicate with server 
+
+
+
+// Main to set up and run client
