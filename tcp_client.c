@@ -14,7 +14,7 @@ int create_socket()
   int socket_fd = socket(AF_INET, SOCK_STREAM, 0);      // For IPv4 & TCP
   if (socket_fd < 0)
   {
-    perror("ERROR opening socket");
+    perror("ERROR opening socket\n");
     exit(EXIT_FAILURE);
   }
   return socket_fd;
@@ -32,7 +32,7 @@ struct sockaddr_in get_server_address(char *hostname, int portnumber)
 
   if (server == NULL)
   {
-    fprintf(stderr, "ERROR no host by that name\n");
+    perror("ERROR no host by that name\n");
     exit(EXIT_FAILURE);
   }
 
@@ -49,14 +49,14 @@ void connect_to_server(int socket_fd)
 {
   if (connect(socket_fd, (struct sockaddr *) &get_server_address, sizeof(get_server_address)) < 0)
   {
-    perror("ERROR establishing connection");
+    perror("ERROR establishing connection\n");
     exit(EXIT_FAILURE);
   }
 }
 
 
 // Establish handshake
-
+// TODO: find a way to establish a handshake in a secure manner
 
 
 // Communicate with server 
