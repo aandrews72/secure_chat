@@ -45,7 +45,14 @@ struct sockaddr_in get_server_address(char *hostname, int portnumber)
 
 
 // Connect to server 
-
+void connect_to_server(int socket_fd)
+{
+  if (connect(socket_fd, (struct sockaddr *) &get_server_address, sizeof(get_server_address)) < 0)
+  {
+    perror("ERROR establishing connection");
+    exit(EXIT_FAILURE);
+  }
+}
 
 
 // Establish handshake
