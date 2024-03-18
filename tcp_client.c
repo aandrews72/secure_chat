@@ -45,7 +45,7 @@ struct sockaddr_in get_server_address(char *hostname, int portnumber)
 
 
 // Connect to server 
-void connect_to_server(int socket_fd)
+void connect_to_server(int socket_fd, struct sockaddr_in servr_address)
 {
   if (connect(socket_fd, (struct sockaddr *) &get_server_address, sizeof(get_server_address)) < 0)
   {
@@ -57,10 +57,53 @@ void connect_to_server(int socket_fd)
 
 // Establish handshake
 // TODO: find a way to establish a handshake in a secure manner
+// consider OpenSSL?
 
 
 // Communicate with server 
+void communicate(int socket_fd)
+{
+  // Change after we get server running, this is just placeholder code
+  // TODO: Get input, dynamically allocate space to store it based on its size 
+  //       maybe set a char limit to stop buffer overflows
+  //       create error handling for reads and writes
+  char *message = "Test";
+  int message_length = strlen(message);
+  char buffer[1024];
+  
+  // Send message length
+  write(socket_fd, &message_length, sizeof(message_length));
+  
+  // Sned message
+  write(socket_fd, message, message_length);
 
+  // Receive message from server
+  memset(buffer, 0, 1024);
+  read(socket_fd, buffer, 1023);
+  printf("Response: %s\n", buffer);
+}
 
 
 // Main to set up and run client
+int main(int argc, char *argv[])
+{
+  int socket_fd;
+  struct sockaddr_in server_address;
+
+  if (argc < 3)
+  {
+    fprintf(stderr, "usage %s hostname port\n", argv[0]);
+    exit(EXIT_FAILURE);
+  }
+
+  socket_fd = create_socket();
+  server_address = get_server_address(argv[1], atoi(argv[2]));
+
+  // TODO: establish handshake
+
+  communicate(socket_fd);
+
+  close(socket_fd);
+  return 0;
+
+}
