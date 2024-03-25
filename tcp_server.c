@@ -4,12 +4,11 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <netdb.h>
 #include <err.h>
 
 
 // TODOS
-
-
 
 // Create socket to listen for connections using socket func 
 int create_socket()
@@ -31,13 +30,15 @@ struct sockaddr_in prepare_server_address(int portnumber)
   server_address.sin_family = AF_INET;
   server_address.sin_addr.s_addr = INADDR_ANY;
   server_address.sin_port = htons(portnumber);
+
+  return server_address;
 }
 
 
 // Bind socket to address and port 
 void bind_socket(int socket_fd, struct sockaddr_in server_address)
 {
-  if (bind(socket_fd(struct sockaddr *)&server_address, sizeof(server_address)) < 0)
+  if (bind(socket_fd, (struct sockaddr *)&server_address, sizeof(server_address)) < 0)
   {
     perror("ERROR on binding");
     exit(EXIT_FAILURE);
