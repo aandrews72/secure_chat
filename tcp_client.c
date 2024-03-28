@@ -69,18 +69,30 @@ void communicate(int socket_fd)
   //       create error handling for reads and writes
   char *message = "Test";
   int message_length = strlen(message);
-  char buffer[1024];
   
   // Send message length
   write(socket_fd, &message_length, sizeof(message_length));
   
-  // Sned message
+  // Send message
   write(socket_fd, message, message_length);
 
+  int response_length;
+  read(socket_fd, &response_length, sizeof(response_length));
+  
+  // Allocate buffer based on message length
+  char *buffer = (char *)malloc(response_length + 1);
+  if (buffer == NULL) 
+  {
+    perror("ERROR allocating memory for response\n");
+    exit(EXIT_FAILURE);
+  } 
+
   // Receive message from server
-  memset(buffer, 0, 1024);
-  read(socket_fd, buffer, 1023);
+  memset(buffer, 0, response_length + 1);
+  read(socket_fd, buffer, response_length);
+  buffer[response_length] = '\0';
   printf("Response: %s\n", buffer);
+  free(buffer);
 }
 
 
