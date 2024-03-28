@@ -46,27 +46,66 @@ void bind_socket(int socket_fd, struct sockaddr_in server_address)
 }
 
 // Listen to connections
-
+void listening(int socket_fd, int log)
+{
+  if (listen(socket_fd, 5) < 0)
+  {
+    perror("ERROR on listen");
+    exit(EXIT_FAILURE);
+  }
+}
 
 
 // Accept connections
+void accept_connections(int socket_fd)
+{
+  struct sockaddr_in client_address;
+  socklen_t client_len = sizeof(client_address);
+
+  while (1)
+  {
+    int new_socket_fd = accept(socket_fd, (struct sockaddr *)&client_address, &client_len);
+    if (new_socket_fd < 0)
+    {
+      perror("ERROR on accept");
+      exit(EXIT_FAILURE);
+    }
+
+    int message_size;
+    int n = read(new_socket_fd, &message_size, sizeof(message_size));
+    if (n < 0)
+    {
+      perror("ERROR reading from socket");
+      close(new_socket_fd);
+      exit(EXIT_FAILURE);
+    }
+
+    char *buffer = (char *)malloc(message_size + 1);
+    if (buffer == NULL)
+    {
+      perror("ERROR allocating memory for message\n");
+      close(new_socket_fd);
+      exit(EXIT_FAILURE);
+    }
+
+    memset(buffer, 0, message_size + 1);
+
+    n = read(new_socket_fd, buffer, message_size);
+    if (n < 0)
+    {
+      perror("ERROR reading message from socket");
+      free(buffer);
+      close(new_socket_fd);
+      exit(EXIT_FAILURE);
+    }
+
+    buffer[message_size] = '\0';
+    printf("Message from client: %s\n", buffer);
+
+    // Fill in response logic
 
 
+  }
+}
 
-// Fork for concurrent connections 
-
-
-
-// Handshake would go here
-
-
-
-// Read clients message 
-
-
-
-// Send back a message
-
-
-
-// Consider closing logic and close connnection/listening socket 
+// main function
